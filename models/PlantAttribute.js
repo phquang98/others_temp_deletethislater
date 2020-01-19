@@ -28,7 +28,7 @@ const PlantAttriSchema = mongoose.Schema({
   },
   timestamp: {
     type: Date,
-    default: Date.now
+    required: true
   },
   isUploaded: {
     type: Boolean,

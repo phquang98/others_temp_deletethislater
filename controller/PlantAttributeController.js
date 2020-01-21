@@ -39,7 +39,7 @@ exports.readPlantAttribute = (req, res) => {
 
 // get HTTP to child node using childnodeid -> get a bunch of data from diff time
 exports.readByChildn = (req, res) => {
-  PlantAttribute.find({ childnodeid: req.params.childnodeid }, (err, data) => {
+  PlantAttribute.find({ _id: req.params._id }, (err, data) => {
     if (err) {
       res.status(500).send(err);
     }
@@ -50,17 +50,24 @@ exports.readByChildn = (req, res) => {
 };
 
 exports.updatePlantAttribute = (req, res) => {
-  PlantAttribute.findOneAndUpdate(
-    { _id: req.params.taskid },
-    req.body,
-    { new: true },
-    (err, task) => {
-      if (err) {
-        res.status(500).send(err);
+  //---
+  PlantAttribute.updateMany(
+    { isUploaded: false },
+    {
+      $set: {
+        isUploaded: true
       }
-      res.status(200).json(task);
-    }
-  );
+    },
+    { multi: true, new: false }
+  )
+    .then(result => {
+      res.status(200).json({ message: "Updated all read entries." });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ error: err });
+    });
+  //---
 };
 
 exports.deletePlantAttribute = (req, res) => {
